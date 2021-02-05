@@ -37,19 +37,43 @@
 
 // });
 
-d3.json("samples.json").then((importedData) => {
-    // console.log(importedData);
-    let data = importedData;
-    // console.log(data);
 
-    console.log(data.samples);
-    data['samples'].map(ele => {
-        console.log(ele.otu_ids);
+// console.log(importedData);
+function init() {
+
+    d3.json("samples.json").then((data) => {
+        let selector = d3.select("#selDataset");
+        let sampleNames = data.names;
+
+        sampleNames.forEach((sample) => {
+            selector
+                .append("option")
+                .text(sample)
+                .property("value", sample);
+        });
+
+        // Use the first sample from the list to build the initial plots
+        var firstSample = sampleNames[0];
+        buildCharts(firstSample);
+        buildMetadata(firstSample);
     });
 
-    // // Sort the data array using the greekSearchResults value
-    // data.sort(function(a, b) {
-    //     return parseFloat(b.greekSearchResults) - parseFloat(a.greekSearchResults);
-    // });
 
-});
+
+
+
+
+}
+
+
+
+
+
+
+
+// // Sort the data array using the greekSearchResults value
+// data.sort(function(a, b) {
+//     return parseFloat(b.greekSearchResults) - parseFloat(a.greekSearchResults);
+// });
+
+init();
