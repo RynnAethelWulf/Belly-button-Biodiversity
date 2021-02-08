@@ -1,4 +1,5 @@
 // Select the html tags
+
 let dropdown = d3.select("#selDataset");
 let list = d3.select(".sample-metadata");
 
@@ -114,7 +115,7 @@ function init() {
 
         // to initialise first charts
         let first_value = name_ids[0];
-        // console.log(first_value);
+        console.log(first_value);
         buildCharts(first_value);
         buildMetadata(first_value);
 
