@@ -1,79 +1,125 @@
-// d3.json('samples.json', function(error, data) {
+// Select the html tags
+let dropdown = d3.select("#selDataset");
+let list = d3.select(".sample-metadata");
 
-//     function tabulate(data, columns) {
-//         var table = d3.select('body').append('table')
-//         var thead = table.append('thead')
-//         var tbody = table.append('tbody');
+// console.log(dropdown_selected_value);
+function optionChanged(select_value) {
+    let value = select_value;
+    buildCharts(value);
+    buildMetadata(value);
 
-//         // append the header row
-//         thead.append('tr')
-//             .selectAll('th')
-//             .data(columns).enter()
-//             .append('th')
-//             .text(function(column) { return column; });
-
-//         // create a row for each object in the data
-//         var rows = tbody.selectAll('tr')
-//             .data(data)
-//             .enter()
-//             .append('tr');
-
-//         // create a cell in each row for each column
-//         var cells = rows.selectAll('td')
-//             .data(function(row) {
-//                 return columns.map(function(column) {
-//                     return { column: column, value: row[column] };
-//                 });
-//             })
-//             .enter()
-//             .append('td')
-//             .text(function(d) { return d.value; });
-
-//         return table;
-//     }
-
-//     // render the table(s)
-//     tabulate(data, ['date', 'close']); // 2 column table
-
-// });
-
-
-// console.log(importedData);
-function init() {
-
+}
+// Display metadata
+function buildMetadata(value) {
     d3.json("samples.json").then((data) => {
-        let selector = d3.select("#selDataset");
-        let sampleNames = data.names;
+        let metadata = data.metadata;
+        let metadat_info = metadata.filter(ele => ele.id == value);
+        console.log(metadat_info[0]);
 
-        sampleNames.forEach((sample) => {
-            selector
-                .append("option")
-                .text(sample)
-                .property("value", sample);
+
+        // remove any children from the list to
+        list.html("");
+
+        metadat_info.map(ele => {
+
+            list.append("li").text(`Id_No: ${ele.id}`);
+            list.append("li").text(`Age: ${ele.age}`);
+            list.append("li").text(`Gender: ${ele.gender}`);
+            list.append("li").text(`Ethnicity: ${ele.ethnicity}`);
+            list.append("li").text(`Location: ${ele.location}`);
+            list.append("li").text(`Ethnicity: ${ele.bbtype}`);
+            list.append("li").text(`Location: ${ele.wfreq}`);
+
+            buildGauge(ele.wfreq)
         });
 
-        // Use the first sample from the list to build the initial plots
-        var firstSample = sampleNames[0];
-        buildCharts(firstSample);
-        buildMetadata(firstSample);
+
+
     });
+}
 
+// buildCharts
+function buildCharts(value) {
+    d3.json("samples.json").then((data) => {
+        // using selected dropdown value to generate the sample values
+        let sample_data = data.samples
+        let filtered_samples = sample_data.filter(ele => ele.id == value);
+        // console.log(filtered_samples);
+        // console.log(filtered_samples[0].sample_values.sort());
+        top_10_samples_values = filtered_samples[0].sample_values.sort((a, b) => b - a).slice(0, 10)
+            // console.log(top_10_samples_values);
+        top_10_samples_ids = filtered_samples[0].otu_ids.slice(0, 10)
+            // console.log(top_10_samples_ids);
 
+        // Creating Plotly h-bar Chart
+        let h_data = [{
+            type: 'bar',
+            x: top_10_samples_values.reverse(),
+            y: top_10_samples_ids.map(ele => `OTU ${ele}`).reverse(),
+            orientation: 'h'
+        }];
+        let layout_h = {
+            title: 'Top 10 OTUs found in the Individual',
+            showlegend: false,
+            height: 500,
+            width: 975
+        };
 
+        Plotly.newPlot('bar', h_data, layout_h, { displayModeBar: false });
 
+        // Creating Bubble Charts
 
+        let trace1 = {
+            x: filtered_samples[0].otu_ids,
+            y: filtered_samples[0].sample_values,
+            mode: 'markers',
+            marker: {
+                size: filtered_samples[0].sample_values,
+                color: filtered_samples[0].otu_ids,
+                colorscale: "Earth"
+
+            }
+        };
+
+        let data_bubble = [trace1];
+        // buuble chart layout
+        let layout_bubble = {
+            title: "Bubble Chart based on OTU's,Sample Values and Size",
+            showlegend: false,
+            height: 700,
+            width: 1200
+        };
+
+        Plotly.newPlot('bubble', data_bubble, layout_bubble, { displayModeBar: false });
+
+    });
 
 }
 
 
 
+function init() {
+
+    d3.json("samples.json").then((data) => {
+        // Select the id from html
+
+        let name_ids = data.names;
+        // Appending names to the dropdown
+        name_ids.forEach((sample) => {
+            dropdown
+                .append("option")
+                .text(sample)
+                .property("value", sample);
+        });
+
+        // to initialise first charts
+        let first_value = name_ids[0];
+        // console.log(first_value);
+        buildCharts(first_value);
+        buildMetadata(first_value);
+
+    })
 
 
-
-
-// // Sort the data array using the greekSearchResults value
-// data.sort(function(a, b) {
-//     return parseFloat(b.greekSearchResults) - parseFloat(a.greekSearchResults);
-// });
-
+}
 init();

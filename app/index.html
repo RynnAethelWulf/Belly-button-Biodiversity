@@ -4,52 +4,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Bellybutton Biodiversity</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Belly Button | Data Analysis</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <link rel="stylesheet" href="./style/style.css">
 </head>
 
 <body>
+    <nav class="navbar navbar-light bg-light p-3">
+        <div class="d-flex col-12 col-md-3 col-lg-2 mb-2 mb-lg-0 flex-wrap flex-md-nowrap justify-content-between">
+            <a class="navbar-brand" href="#">
+                Belly Button Dashboard
+            </a>
+            <button class="navbar-toggler d-md-none collapsed mb-3" type="button" data-toggle="collapse" data-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="col-12 col-md-4 col-lg-2">
+            <select id="selDataset" onchange="optionChanged(this.value)" class="form-select" aria-label="Default select example">
+                <option selected>Select User ID</option>
+              </select>
+        </div>
 
-    <div class="container">
+    </nav>
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12 jumbotron text-center">
-                <h1>Belly Button Biodiversity Dashboard</h1>
-                <p>Use the interactive charts below to explore the dataset</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                <div class="well">
-                    <h5>Test Subject ID No.:</h5>
-                    <select id="selDataset" onchange="optionChanged(this.value)"></select>
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#dashboard">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                                <span class="ml-2">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#charts">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                                <span class="ml-2">Charts</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#bonus">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bar-chart-2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                                <span class="ml-2">Bubble Chart</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Demographic Info</h3>
+            </nav>
+            <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4" id="dashboard">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/app">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Overview</li>
+                    </ol>
+                </nav>
+                <h1 class="h2">Dashboard</h1>
+                <p> Dashboard explores the Belly Button Biodiversity dataset, which catalogs the microbes that colonize human navels.</br>
+                    The dataset reveals that a small handful of microbial species (also called operational taxonomic units, or OTUs, in the study) were present in more than 70% of people, while the rest were relatively rare.</p>
+                <div class="row my-4">
+                    <div class="col-12 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                        <div class="card">
+                            <h5 class="card-header">Demographic Info Card</h5>
+                            <div class="card-body">
+                                <h5 class="card-title">Details: </h5>
+                                <p class="card-text">
+                                    <ol class="sample-metadata"></ol>
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <div id="sample-metadata" class="panel-body"></div>
+
+
                 </div>
-            </div>
-            <div class="col-md-5">
-                <div id="bar"></div>
-            </div>
-            <div class="col-md-5">
-                <div id="gauge"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="bubble"></div>
-            </div>
+                <div class="row" id="charts">
+                    <div class="col-12 col-xl-8 mb-4 mb-lg-0">
+                        <div class="card">
+                            <h5 class="card-header">Horizontal Bar Chart</h5>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <div id="bar"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-xl-4">
+                        <div class="card">
+                            <h5 class="card-header">Guage Chart</h5>
+                            <div class="card-body">
+                                <div id="gauge"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:20px;" id="bonus">
+                    <div class="col-12 col-xl-12 mb-4 mb-lg-0">
+                        <div class="card">
+                            <h5 class="card-header">Bubble Chart</h5>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <div id="bubble"></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="pt-5 d-flex justify-content-between">
+
+                    <ul class="nav m-0">
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" aria-current="page" href="https://github.com/bimalkprabha">Github</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" href="https://www.linkedin.com/in/bimal-prabha/">Linkedin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-secondary" href="mailto:abimalk@gmail.com">Contact</a>
+                        </li>
+                    </ul>
+                </footer>
+            </main>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="./static/js/app.js"></script>
     <script src="./static/js/bonus.js"></script>
     <script src="samples.json"></script>
+
 
 </body>
 
